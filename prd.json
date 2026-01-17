@@ -301,6 +301,156 @@
       "priority": 20,
       "passes": true,
       "notes": "Fixed parser in web/src/lib/gmail/parser.ts, added scraper in web/src/lib/scraper/index.ts, updated pipeline to scrape content"
+    },
+    {
+      "id": "US-021",
+      "title": "Ingest additional newsletter senders beyond TL;DR",
+      "description": "As a user of the news aggregator, I want the ingestion pipeline to also process emails from Not Boring, 6pages, and The Batch so that I can get consistent, structured article items from more newsletters without manual forwarding or special handling.",
+      "acceptanceCriteria": [
+        "The ingestion pipeline processes emails from these senders: notboring@substack.com, hello@6pages.com, thebatch@deeplearning.ai",
+        "Emails from these senders are recognized even if display name changes or reply-to differs from From",
+        "For each recognized sender, the pipeline routes the email to a sender-specific parser module (not the TL;DR parser)",
+        "Unrecognized senders continue to be ignored with no regression to TL;DR ingestion",
+        "A single run of the pipeline can ingest a mix of TL;DR + these new senders without failures",
+        "Typecheck passes"
+      ],
+      "priority": 23,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-022",
+      "title": "Not Boring (Substack) parsing into structured article candidates",
+      "description": "As a user, I want Not Boring emails to produce structured article items (title + URL + summary) so that they can be deduplicated, scraped, and shown in the UI like existing items.",
+      "acceptanceCriteria": [
+        "For an email from notboring@substack.com, the system extracts: newsletter_source, email_subject, published_at, and a list of article_candidates",
+        "Each article_candidate contains: title (non-empty), url (valid http/https), source_name, extraction_method",
+        "Link extraction prefers links in main body content over footer/unsubscribe/manage links",
+        "Excludes common non-article links (unsubscribe, preferences, view-in-browser, share, referral, substack account links)",
+        "If multiple links point to the same canonical URL, keep only one candidate",
+        "Fallback: create single candidate for Substack post itself if no external links found, or emit zero candidates without failing",
+        "Candidates flow through existing scraping + dedup pipeline",
+        "Typecheck passes"
+      ],
+      "priority": 24,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-023",
+      "title": "6pages parsing into structured article candidates",
+      "description": "As a user, I want 6pages emails to produce structured article items (title + URL + summary) so that 6pages content is captured and merged with other sources.",
+      "acceptanceCriteria": [
+        "For an email from hello@6pages.com, the system extracts: newsletter_source, email_subject, published_at, and a list of article_candidates",
+        "Each article_candidate contains: title, url, source_name, extraction_method",
+        "Link extraction prefers read more/article links over social icons and navigation",
+        "Excludes unsubscribe/manage/preferences links and deduplicates by canonical URL",
+        "If email contains section headers with multiple items, produce multiple candidates",
+        "If candidate has URL but missing title, derive best-effort title from nearest heading, anchor text, or email subject (with title_inferred flag)",
+        "Candidates flow through existing scraping + dedup pipeline",
+        "Typecheck passes"
+      ],
+      "priority": 25,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-024",
+      "title": "The Batch: extract in-email articles without external scraping",
+      "description": "As a user, I want The Batch emails to be parsed into structured in-email articles so that I can ingest items even when there is no external page to scrape.",
+      "acceptanceCriteria": [
+        "For an email from thebatch@deeplearning.ai, the system extracts: newsletter_source, email_subject, published_at, and a list of article_candidates",
+        "Each in-email article_candidate contains: title (non-empty), content (non-empty plaintext/markdown), source_name, extraction_method='email_inline'",
+        "URL field is optional - capture if relevant link exists, otherwise url=null",
+        "Parser identifies article blocks/sections in email body and extracts each as separate candidate",
+        "Excludes boilerplate/footer text (unsubscribe, sponsor, legal, social icons)",
+        "Preserves bullet points as markdown bullets",
+        "Inline candidates bypass web scraper stage safely",
+        "Inline candidates still go through semantic dedup using title + content embeddings",
+        "UI/store can display inline items even without a URL",
+        "Typecheck passes"
+      ],
+      "priority": 26,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-025",
+      "title": "Sender routing + parser framework for newsletters",
+      "description": "As a developer, I want a modular parser registry keyed by sender/source so that adding future newsletters requires minimal changes and avoids fragile conditionals.",
+      "acceptanceCriteria": [
+        "Create a parser registry that maps newsletter_source (or sender match) to a parser implementation",
+        "Matching strategy supports: exact match on email address, optional fallback match on domain, optional match on known header patterns",
+        "The pipeline chooses the parser via the registry and logs: matched source, parser used, number of candidates extracted",
+        "Adding a new sender requires: adding one registry entry, implementing one parser module with tests, no modifications to unrelated parsers",
+        "Existing TL;DR behavior remains unchanged",
+        "Typecheck passes"
+      ],
+      "priority": 21,
+      "passes": true,
+      "notes": "Created web/src/lib/parsers/ with types.ts (interfaces), registry.ts (ParserRegistry class), tldr.ts (TLDRParser), index.ts (registration). Updated parser.ts to use registry."
+    },
+    {
+      "id": "US-026",
+      "title": "Candidate normalization + canonical URL handling",
+      "description": "As a user, I want extracted links to be normalized and deduplicated early so that the same article doesn't appear multiple times due to tracking params.",
+      "acceptanceCriteria": [
+        "For any candidate with a URL, produce canonical_url by: removing tracking parameters (utm_*, ref, mc_cid, mc_eid, etc.), normalizing protocol/host casing, removing URL fragments when safe",
+        "If two candidates resolve to the same canonical_url, keep only one (prefer richer title)",
+        "Canonicalization is applied before scraping and before semantic dedup",
+        "Inline candidates (The Batch) skip canonicalization if url is null",
+        "Typecheck passes"
+      ],
+      "priority": 22,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-027",
+      "title": "Observability: per-sender metrics and failure isolation",
+      "description": "As a developer, I want clear logs and metrics per sender/parser so that I can debug ingestion issues without breaking other newsletters.",
+      "acceptanceCriteria": [
+        "For each processed email, log structured fields: message_id, from, subject, newsletter_source, parser_name, candidates_extracted_count, candidates_emitted_count, errors",
+        "A parsing failure for one email does not stop processing the rest of the batch",
+        "Errors are caught, logged, and processing continues",
+        "If a sender email is recognized but parsing yields zero candidates, log as warning (not error)",
+        "Typecheck passes"
+      ],
+      "priority": 27,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-028",
+      "title": "Automated tests + fixtures for the three new senders",
+      "description": "As a developer, I want fixture-based tests for each sender's parsing behavior so that parsing remains stable as email templates change.",
+      "acceptanceCriteria": [
+        "Add test fixtures (sanitized HTML/email payloads) for: Not Boring, 6pages, The Batch",
+        "Tests assert: sender recognition routes to correct parser, minimum extracted fields exist, expected number of candidates, footer/unsubscribe links are excluded",
+        "The Batch tests verify inline content items are produced and do not require URLs",
+        "Add regression tests ensuring TL;DR parsing still passes unchanged",
+        "Typecheck passes"
+      ],
+      "priority": 28,
+      "passes": false,
+      "notes": ""
+    },
+    {
+      "id": "US-029",
+      "title": "End-to-end ingestion behavior for mixed inbox",
+      "description": "As a user, I want a mixed inbox run to produce stable, deduplicated items across all supported newsletters so that I get one coherent feed.",
+      "acceptanceCriteria": [
+        "Given a test inbox with TL;DR, Not Boring, 6pages, and The Batch emails, the pipeline produces output",
+        "Output includes scraped items for candidates with URLs and inline items for The Batch",
+        "Semantic dedup merges duplicates across sources when they refer to the same story",
+        "For URL-based items, dedup uses canonical URL + semantic check",
+        "For inline items, dedup uses title + content embeddings",
+        "No ingestion step throws unhandled exceptions",
+        "Typecheck passes"
+      ],
+      "priority": 29,
+      "passes": false,
+      "notes": ""
     }
   ]
 }
