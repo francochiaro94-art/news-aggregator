@@ -37,7 +37,7 @@ export default function ArticleCard({ article, onFeedback }: ArticleCardProps) {
         e.currentTarget.style.backgroundColor = 'var(--color-bg-secondary)';
       }}
     >
-      <div className="flex justify-between items-start gap-4">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
         <div className="flex-1 min-w-0">
           <a
             href={article.source_url}
@@ -72,7 +72,7 @@ export default function ArticleCard({ article, onFeedback }: ArticleCardProps) {
         </div>
 
         {/* Feedback Buttons */}
-        <div className="flex flex-col gap-1.5 flex-shrink-0">
+        <div className="flex sm:flex-col gap-2 sm:gap-1.5 flex-shrink-0">
           <button
             onClick={() => onFeedback(article.id, true)}
             className="p-2 rounded-lg transition-colors"

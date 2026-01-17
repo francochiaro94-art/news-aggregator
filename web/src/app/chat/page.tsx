@@ -92,7 +92,7 @@ export default function ChatPage() {
       </div>
 
       <div
-        className="rounded-xl border flex flex-col h-[600px]"
+        className="rounded-xl border flex flex-col h-[500px] sm:h-[600px]"
         style={{
           backgroundColor: 'var(--color-bg-secondary)',
           borderColor: 'var(--color-border)',

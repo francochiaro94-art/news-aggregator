@@ -139,10 +139,10 @@ export default function SummaryPage() {
             </p>
           </div>
 
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
             <button
               onClick={() => setShowDatePicker(!showDatePicker)}
-              className="px-4 py-2.5 text-sm font-medium rounded-lg transition-colors border"
+              className="px-4 py-2.5 text-sm font-medium rounded-lg transition-colors border w-full sm:w-auto"
               style={{
                 color: 'var(--color-text-secondary)',
                 borderColor: 'var(--color-border)',
@@ -162,7 +162,7 @@ export default function SummaryPage() {
             <button
               onClick={runWeeklyAggregation}
               disabled={generating}
-              className="px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               style={{
                 backgroundColor: generating ? 'var(--color-accent)' : 'var(--color-accent)',
               }}
@@ -284,7 +284,7 @@ export default function SummaryPage() {
 
           {/* Summary Card */}
           <div
-            className="rounded-xl border p-8"
+            className="rounded-xl border p-6 sm:p-8"
             style={{
               backgroundColor: 'var(--color-bg-secondary)',
               borderColor: 'var(--color-border)',
@@ -314,7 +314,7 @@ export default function SummaryPage() {
           {/* Insights Card */}
           {aggregation.insights && (
             <div
-              className="rounded-xl border-l-4 p-8"
+              className="rounded-xl border-l-4 p-6 sm:p-8"
               style={{
                 backgroundColor: 'var(--color-bg-accent-subtle)',
                 borderLeftColor: 'var(--color-accent)',
