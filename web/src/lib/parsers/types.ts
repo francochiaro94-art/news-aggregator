@@ -23,6 +23,8 @@ export interface ArticleCandidate {
   reading_time?: string;
   /** Section within the newsletter (e.g., "Headlines", "Deep Dives") */
   section?: string;
+  /** Date from the newsletter email (YYYY-MM-DD format) */
+  newsletter_date?: string;
 }
 
 /**

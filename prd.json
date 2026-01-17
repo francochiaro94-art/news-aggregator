@@ -402,8 +402,8 @@
         "Typecheck passes"
       ],
       "priority": 22,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Created web/src/lib/parsers/canonicalize.ts with URL normalization, tracking param removal, and deduplication. Updated parser.ts to apply canonicalization before saving."
     },
     {
       "id": "US-027",

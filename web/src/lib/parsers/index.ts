@@ -39,3 +39,12 @@ parserRegistry.register({
 export { parserRegistry } from './registry';
 export * from './types';
 export { tldrParser } from './tldr';
+
+// Export URL canonicalization utilities
+export {
+  canonicalizeUrl,
+  resolveTrackingUrl,
+  normalizeUrl,
+  deduplicateCandidatesByUrl,
+  addCanonicalUrls,
+} from './canonicalize';
