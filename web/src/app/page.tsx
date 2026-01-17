@@ -131,11 +131,11 @@ export default function SummaryPage() {
 
   return (
     <div>
-      {/* Page Header - Aligned with two-column layout */}
+      {/* Page Header - Title left, buttons right */}
       <div className="mb-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left column - Title (40%) */}
-          <div className="lg:w-[40%]">
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          {/* Title - Left */}
+          <div>
             <h1
               className="text-4xl font-bold tracking-tight"
               style={{ color: 'var(--color-text-primary)' }}
@@ -150,47 +150,45 @@ export default function SummaryPage() {
             </p>
           </div>
 
-          {/* Right column - Actions (60%) */}
-          <div className="lg:w-[60%] flex items-end justify-start lg:justify-end">
-            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-              <button
-                onClick={() => setShowDatePicker(!showDatePicker)}
-                className="px-4 py-2.5 text-sm font-medium rounded-lg transition-colors border w-full sm:w-auto"
-                style={{
-                  color: 'var(--color-text-secondary)',
-                  borderColor: 'var(--color-border)',
-                  backgroundColor: 'transparent',
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)';
-                  e.currentTarget.style.color = 'var(--color-text-primary)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'transparent';
-                  e.currentTarget.style.color = 'var(--color-text-secondary)';
-                }}
-              >
-                Custom Range
-              </button>
-              <button
-                onClick={runWeeklyAggregation}
-                disabled={generating}
-                className="px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-                style={{
-                  backgroundColor: 'var(--color-accent)',
-                }}
-                onMouseEnter={(e) => {
-                  if (!generating) {
-                    e.currentTarget.style.backgroundColor = 'var(--color-accent-hover)';
-                  }
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.backgroundColor = 'var(--color-accent)';
-                }}
-              >
-                {generating ? 'Generating...' : 'Generate Weekly'}
-              </button>
-            </div>
+          {/* Buttons - Right */}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <button
+              onClick={() => setShowDatePicker(!showDatePicker)}
+              className="px-4 py-2.5 text-sm font-medium rounded-lg transition-colors border"
+              style={{
+                color: 'var(--color-text-secondary)',
+                borderColor: 'var(--color-border)',
+                backgroundColor: 'transparent',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)';
+                e.currentTarget.style.color = 'var(--color-text-primary)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'var(--color-text-secondary)';
+              }}
+            >
+              Custom Range
+            </button>
+            <button
+              onClick={runWeeklyAggregation}
+              disabled={generating}
+              className="px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                backgroundColor: 'var(--color-accent)',
+              }}
+              onMouseEnter={(e) => {
+                if (!generating) {
+                  e.currentTarget.style.backgroundColor = 'var(--color-accent-hover)';
+                }
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'var(--color-accent)';
+              }}
+            >
+              {generating ? 'Generating...' : 'Generate Weekly'}
+            </button>
           </div>
         </div>
       </div>
