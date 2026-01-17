@@ -294,8 +294,8 @@ export default function SummaryPage() {
 
           {/* Two-Column Layout */}
           <div className="flex flex-col lg:flex-row gap-6">
-            {/* Left Column - Weekly Summary (60-65%) */}
-            <div className="lg:w-[62%]">
+            {/* Left Column - Weekly Summary (40%) */}
+            <div className="lg:w-[40%]">
               <div
                 className="rounded-xl border p-6 sm:p-8 h-full"
                 style={{
@@ -315,8 +315,8 @@ export default function SummaryPage() {
               </div>
             </div>
 
-            {/* Right Column - Key Insights (35-40%) */}
-            <div className="lg:w-[38%]">
+            {/* Right Column - Key Insights (60%) */}
+            <div className="lg:w-[60%]">
               <div className="space-y-4">
                 <h2
                   className="text-lg font-semibold mb-4"

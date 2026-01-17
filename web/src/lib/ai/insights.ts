@@ -71,22 +71,27 @@ ${articleContext}
 
 Respond with ONLY valid JSON in this exact format (no markdown, no code blocks):
 {
-  "mainInsight": "A single compelling sentence capturing the week's most significant development or pattern",
+  "mainInsight": "A specific, substantive sentence naming key players and what happened",
   "keyThemes": [
-    {"name": "Theme Name", "articleCount": 3},
-    {"name": "Theme Name", "articleCount": 2}
+    {"name": "Specific Theme Name", "articleCount": 3},
+    {"name": "Another Specific Theme", "articleCount": 2}
   ],
   "emergingTrends": [
-    "Short trend description 1",
-    "Short trend description 2",
-    "Short trend description 3"
+    "Specific trend with concrete example",
+    "Another trend naming technologies or companies"
   ]
 }
 
-Requirements:
-- mainInsight: 1-2 sentences max, synthesize the most important takeaway
-- keyThemes: 3-5 themes, each with a count of related articles
-- emergingTrends: 3-5 short bullet points about emerging patterns
+CRITICAL REQUIREMENTS:
+- mainInsight: 1-2 sentences that name specific companies, technologies, or events - NOT vague summaries
+  * BAD: "AI continues to transform industries"
+  * GOOD: "OpenAI and Google both released agent frameworks this week, signaling agents as the next platform war"
+- keyThemes: 3-5 themes with specific names (not generic like "AI Advancements")
+  * BAD: "Technology Innovation"
+  * GOOD: "Agent Frameworks & Tooling" or "Enterprise AI Deployment"
+- emergingTrends: 3-5 bullets that describe specific patterns with examples
+  * BAD: "Companies are investing more in AI"
+  * GOOD: "Smaller models (7B-13B params) replacing larger ones for production use - Mistral, Llama gaining enterprise traction"
 - Only use information from the provided articles`;
 
   const response = await createChatCompletion([
@@ -129,15 +134,19 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
 {
   "summary": "1-2 sentence overview of the most significant market move",
   "bullets": [
-    "Concise point about a partnership or deal",
-    "Concise point about an acquisition or investment",
-    "Concise point about a leadership change"
+    "Specific point with company names, deal values, or concrete details",
+    "Another specific point with actual names and numbers"
   ]
 }
 
-Requirements:
+CRITICAL REQUIREMENTS:
 - summary: 1-2 sentences for the collapsed card state
-- bullets: 3-8 concise, independently readable points
+- bullets: 3-8 points, each MUST include specific details:
+  * Name the companies, people, or products involved
+  * Include numbers (dollar amounts, percentages, headcounts) when available
+  * State what actually happened, not vague descriptions
+- AVOID generic phrases like "major partnership", "significant investment", "strategic move"
+- INSTEAD write: "Microsoft acquired Activision for $69B" or "OpenAI partnered with Reddit for training data access"
 - If no relevant content found, return empty bullets array
 - Only use information from the provided articles`;
 
@@ -178,15 +187,19 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
 {
   "summary": "1-2 sentence overview of the dominant technical shift",
   "bullets": [
-    "Concise point about an architectural change",
-    "Concise point about agent systems",
-    "Concise point about infrastructure evolution"
+    "Specific technical point naming the technology, framework, or approach",
+    "Another specific point with concrete technical details"
   ]
 }
 
-Requirements:
+CRITICAL REQUIREMENTS:
 - summary: 1-2 sentences for the collapsed card state
-- bullets: 3-8 concise, technically focused points
+- bullets: 3-8 points, each MUST include specific details:
+  * Name the actual technologies, frameworks, models, or tools
+  * Describe what specifically changed or was introduced
+  * Include technical specifics (model sizes, latency improvements, architecture names)
+- AVOID generic phrases like "improved performance", "better scalability", "innovative approach"
+- INSTEAD write: "Claude now supports 200K context window" or "Llama 3 uses grouped-query attention reducing inference costs 40%"
 - Keep content distinct from market or business insights
 - Only use information from the provided articles`;
 
@@ -229,19 +242,24 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
   "industries": [
     {
       "name": "Healthcare",
-      "bullets": ["Specific use case or deployment", "Another application"]
+      "bullets": ["Specific deployment with company name and what they built"]
     },
     {
       "name": "Finance",
-      "bullets": ["Specific use case"]
+      "bullets": ["Specific use case with institution name and concrete application"]
     }
   ]
 }
 
-Requirements:
+CRITICAL REQUIREMENTS:
 - summary: 1-2 sentences for the collapsed card state
 - Only include industries with actual content from the articles
-- Each industry should have 1-3 concise bullets
+- Each bullet MUST include specific details:
+  * Name the company or organization deploying the technology
+  * Describe the specific application or product
+  * Include measurable outcomes if mentioned (cost savings, efficiency gains, user numbers)
+- AVOID generic phrases like "AI is transforming healthcare" or "financial services are adopting AI"
+- INSTEAD write: "Mayo Clinic deployed GPT-4 for radiology report drafting, reducing turnaround 60%" or "JPMorgan's IndexGPT automates thematic investment research"
 - Only use information from the provided articles`;
 
   const response = await createChatCompletion([
@@ -281,15 +299,19 @@ Respond with ONLY valid JSON (no markdown, no code blocks):
 {
   "summary": "1-2 sentence macro-level takeaway about policy or economic forces",
   "bullets": [
-    "Concise point about a regulatory development",
-    "Concise point about economic impact",
-    "Concise point about policy signal"
+    "Specific policy point naming the country, agency, or legislation",
+    "Another specific point with concrete regulatory or economic details"
   ]
 }
 
-Requirements:
+CRITICAL REQUIREMENTS:
 - summary: 1-2 sentences for the collapsed card state
-- bullets: 3-8 concise points about macro-level forces
+- bullets: 3-8 points, each MUST include specific details:
+  * Name the country, regulatory body, legislation, or policy
+  * Describe what specifically was proposed, enacted, or changed
+  * Include dates, fines, or specific requirements when available
+- AVOID generic phrases like "increased regulation", "growing concerns", "policy implications"
+- INSTEAD write: "EU AI Act mandates transparency requirements for foundation models by 2025" or "FTC investigating OpenAI over consumer protection concerns"
 - Do not duplicate content from other insight categories
 - Only use information from the provided articles`;
 
