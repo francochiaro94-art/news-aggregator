@@ -109,7 +109,12 @@ export default function SummaryPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-gray-500">Loading...</div>
+        <div
+          className="text-sm"
+          style={{ color: 'var(--color-text-muted)' }}
+        >
+          Loading...
+        </div>
       </div>
     );
   }
@@ -187,84 +192,173 @@ export default function SummaryPage() {
       )}
 
       {error && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+        <div
+          className="mb-8 px-4 py-3 rounded-lg text-sm"
+          style={{
+            backgroundColor: 'var(--color-error-bg)',
+            color: 'var(--color-error)',
+          }}
+        >
           {error}
         </div>
       )}
 
       {generating && (
-        <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700">
+        <div
+          className="mb-8 px-4 py-3 rounded-lg text-sm"
+          style={{
+            backgroundColor: 'var(--color-info-bg)',
+            color: 'var(--color-text-secondary)',
+          }}
+        >
           <div className="flex items-center gap-3">
-            <div className="animate-spin h-5 w-5 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+            <div
+              className="animate-spin h-4 w-4 border-2 rounded-full"
+              style={{
+                borderColor: 'var(--color-border)',
+                borderTopColor: 'var(--color-accent)',
+              }}
+            />
             <span>Generating aggregation... This may take a minute.</span>
           </div>
         </div>
       )}
 
       {!aggregation ? (
-        <div className="bg-white rounded-xl shadow-sm border p-8 text-center">
-          <div className="text-6xl mb-4">📬</div>
-          <h2 className="text-xl font-semibold text-gray-900 mb-2">No summaries yet</h2>
-          <p className="text-gray-600 mb-6">
+        <div
+          className="rounded-xl border py-16 px-8 text-center"
+          style={{
+            backgroundColor: 'var(--color-bg-secondary)',
+            borderColor: 'var(--color-border)',
+          }}
+        >
+          <h2
+            className="text-xl font-semibold mb-2"
+            style={{ color: 'var(--color-text-primary)' }}
+          >
+            No summaries yet
+          </h2>
+          <p
+            className="mb-8 max-w-sm mx-auto"
+            style={{ color: 'var(--color-text-secondary)' }}
+          >
             Connect your Gmail and generate your first weekly summary to get started.
           </p>
           <button
             onClick={runWeeklyAggregation}
             disabled={generating}
-            className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+            className="px-5 py-2.5 text-sm font-medium text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{ backgroundColor: 'var(--color-accent)' }}
+            onMouseEnter={(e) => {
+              if (!generating) {
+                e.currentTarget.style.backgroundColor = 'var(--color-accent-hover)';
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = 'var(--color-accent)';
+            }}
           >
             Generate First Summary
           </button>
         </div>
       ) : (
-        <div className="space-y-6">
-          {/* Date Range Card */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <div className="flex items-center gap-2 text-gray-500 text-sm mb-2">
-              <span>📅</span>
-              <span>
-                {formatDate(aggregation.start_date)} — {formatDate(aggregation.end_date)}
-              </span>
-            </div>
-            <div className="text-xs text-gray-400">
+        <div className="space-y-8">
+          {/* Date Range Meta */}
+          <div
+            className="flex items-center justify-between py-3 px-4 rounded-lg"
+            style={{ backgroundColor: 'var(--color-bg-tertiary)' }}
+          >
+            <span
+              className="text-sm"
+              style={{ color: 'var(--color-text-secondary)' }}
+            >
+              {formatDate(aggregation.start_date)} — {formatDate(aggregation.end_date)}
+            </span>
+            <span
+              className="text-xs"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
               Generated {formatDate(aggregation.created_at)}
-            </div>
+            </span>
           </div>
 
           {/* Summary Card */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Summary</h2>
-            <div className="prose prose-gray max-w-none">
+          <div
+            className="rounded-xl border p-8"
+            style={{
+              backgroundColor: 'var(--color-bg-secondary)',
+              borderColor: 'var(--color-border)',
+            }}
+          >
+            <h2
+              className="text-lg font-medium mb-6"
+              style={{ color: 'var(--color-text-primary)' }}
+            >
+              Summary
+            </h2>
+            <div className="max-w-prose">
               {aggregation.summary.split('\n').map((paragraph, i) => (
-                <p key={i} className="text-gray-700 mb-3">
-                  {paragraph}
-                </p>
+                paragraph ? (
+                  <p
+                    key={i}
+                    className="mb-4 leading-relaxed"
+                    style={{ color: 'var(--color-text-secondary)' }}
+                  >
+                    {paragraph}
+                  </p>
+                ) : null
               ))}
             </div>
           </div>
 
           {/* Insights Card */}
           {aggregation.insights && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl shadow-sm border border-blue-100 p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Key Insights</h2>
-              <div className="prose prose-gray max-w-none">
+            <div
+              className="rounded-xl border-l-4 p-8"
+              style={{
+                backgroundColor: 'var(--color-bg-accent-subtle)',
+                borderLeftColor: 'var(--color-accent)',
+              }}
+            >
+              <h2
+                className="text-lg font-medium mb-6"
+                style={{ color: 'var(--color-text-primary)' }}
+              >
+                Key Insights
+              </h2>
+              <div className="space-y-3">
                 {aggregation.insights.split('\n').map((line, i) => {
                   if (line.startsWith('**') && line.endsWith('**')) {
                     return (
-                      <h3 key={i} className="text-lg font-semibold text-gray-800 mt-4 mb-2">
+                      <h3
+                        key={i}
+                        className="text-base font-medium mt-6 mb-2"
+                        style={{ color: 'var(--color-text-primary)' }}
+                      >
                         {line.replace(/\*\*/g, '')}
                       </h3>
                     );
                   }
                   if (line.startsWith('- ')) {
                     return (
-                      <li key={i} className="text-gray-700 ml-4">
+                      <p
+                        key={i}
+                        className="pl-4 leading-relaxed"
+                        style={{
+                          color: 'var(--color-text-secondary)',
+                          borderLeft: '2px solid var(--color-border)',
+                        }}
+                      >
                         {line.substring(2)}
-                      </li>
+                      </p>
                     );
                   }
                   return line ? (
-                    <p key={i} className="text-gray-700 mb-2">
+                    <p
+                      key={i}
+                      className="leading-relaxed"
+                      style={{ color: 'var(--color-text-secondary)' }}
+                    >
                       {line}
                     </p>
                   ) : null;
@@ -273,20 +367,30 @@ export default function SummaryPage() {
             </div>
           )}
 
-          {/* Article Count */}
-          <div className="bg-white rounded-xl shadow-sm border p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">Articles Included</h3>
-                <p className="text-gray-600">{articles.length} articles in this digest</p>
-              </div>
-              <a
-                href="/articles"
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                View All →
-              </a>
-            </div>
+          {/* Article Count - Footer style */}
+          <div
+            className="flex items-center justify-between pt-6 border-t"
+            style={{ borderColor: 'var(--color-border)' }}
+          >
+            <p
+              className="text-sm"
+              style={{ color: 'var(--color-text-muted)' }}
+            >
+              {articles.length} articles in this digest
+            </p>
+            <a
+              href="/articles"
+              className="text-sm font-medium transition-colors"
+              style={{ color: 'var(--color-accent)' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.color = 'var(--color-accent-hover)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.color = 'var(--color-accent)';
+              }}
+            >
+              View all articles →
+            </a>
           </div>
         </div>
       )}
