@@ -34,15 +34,23 @@ export default function ChatPage() {
       content: input.trim(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    // Build conversation history including the new message
+    const updatedMessages = [...messages, userMessage];
+    setMessages(updatedMessages);
     setInput('');
     setLoading(true);
 
     try {
+      // Send full conversation history to API
+      const conversationHistory = updatedMessages.map(({ role, content }) => ({
+        role,
+        content,
+      }));
+
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMessage.content }),
+        body: JSON.stringify({ messages: conversationHistory }),
       });
 
       const data = await res.json();
@@ -78,18 +86,51 @@ export default function ChatPage() {
     <div>
       {/* Page Header */}
       <div className="mb-12">
-        <h1
-          className="text-4xl font-bold tracking-tight"
-          style={{ color: 'var(--color-text-primary)' }}
-        >
-          Chat
-        </h1>
-        <p
-          className="mt-2 text-base"
-          style={{ color: 'var(--color-text-secondary)' }}
-        >
-          Ask questions about your newsletter articles
-        </p>
+        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          <div>
+            <h1
+              className="text-4xl font-bold tracking-tight"
+              style={{ color: 'var(--color-text-primary)' }}
+            >
+              Chat
+            </h1>
+            <p
+              className="mt-2 text-base"
+              style={{ color: 'var(--color-text-secondary)' }}
+            >
+              Ask questions about your newsletter articles
+            </p>
+          </div>
+          {messages.length > 0 && (
+            <div className="flex items-center gap-4">
+              <p
+                className="text-sm"
+                style={{ color: 'var(--color-text-muted)' }}
+              >
+                {messages.length} message{messages.length !== 1 ? 's' : ''} in conversation
+              </p>
+              <button
+                onClick={() => setMessages([])}
+                className="px-3 py-1.5 text-sm font-medium rounded-lg transition-colors border"
+                style={{
+                  color: 'var(--color-text-secondary)',
+                  borderColor: 'var(--color-border)',
+                  backgroundColor: 'transparent',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'var(--color-bg-tertiary)';
+                  e.currentTarget.style.color = 'var(--color-text-primary)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'transparent';
+                  e.currentTarget.style.color = 'var(--color-text-secondary)';
+                }}
+              >
+                New conversation
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <div

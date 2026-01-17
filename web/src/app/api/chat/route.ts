@@ -1,15 +1,66 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createChatCompletion } from '@/lib/ai/client';
+import { createChatCompletion, estimateTokens } from '@/lib/ai/client';
 import { getLatestAggregation, getArticlesForAggregation } from '@/lib/db';
+
+interface ChatMessage {
+  role: 'user' | 'assistant';
+  content: string;
+}
+
+// Maximum tokens for conversation history (leaving room for system prompt + articles + response)
+const MAX_CONVERSATION_TOKENS = 6000;
+
+/**
+ * Truncate conversation history to fit within token limit.
+ * Keeps the most recent messages, removing older ones from the beginning.
+ */
+function truncateConversationHistory(
+  messages: ChatMessage[],
+  maxTokens: number
+): { messages: ChatMessage[]; truncated: boolean } {
+  // Calculate total tokens
+  let totalTokens = messages.reduce(
+    (sum, msg) => sum + estimateTokens(msg.content),
+    0
+  );
+
+  if (totalTokens <= maxTokens) {
+    return { messages, truncated: false };
+  }
+
+  // Truncate from the beginning, keeping recent messages
+  const truncatedMessages = [...messages];
+  while (totalTokens > maxTokens && truncatedMessages.length > 1) {
+    const removed = truncatedMessages.shift();
+    if (removed) {
+      totalTokens -= estimateTokens(removed.content);
+    }
+  }
+
+  console.warn(
+    `Conversation history truncated: ${messages.length} -> ${truncatedMessages.length} messages`
+  );
+
+  return { messages: truncatedMessages, truncated: true };
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { message, aggregationId } = body;
+    const { message, messages, aggregationId } = body;
 
-    if (!message) {
+    // Support both single message (backward compat) and messages array
+    let conversationHistory: ChatMessage[] = [];
+
+    if (messages && Array.isArray(messages) && messages.length > 0) {
+      // Use the full conversation history
+      conversationHistory = messages;
+    } else if (message) {
+      // Backward compatibility: single message
+      conversationHistory = [{ role: 'user', content: message }];
+    } else {
       return NextResponse.json(
-        { error: 'message is required' },
+        { error: 'message or messages array is required' },
         { status: 400 }
       );
     }
@@ -48,10 +99,19 @@ CRITICAL RULES:
 ARTICLES FOR REFERENCE:
 ${articleContext}`;
 
-    const response = await createChatCompletion([
+    // Truncate conversation history if too long
+    const { messages: truncatedHistory, truncated } = truncateConversationHistory(
+      conversationHistory,
+      MAX_CONVERSATION_TOKENS
+    );
+
+    // Build messages array: system prompt + conversation history
+    const openAIMessages: { role: 'system' | 'user' | 'assistant'; content: string }[] = [
       { role: 'system', content: systemPrompt },
-      { role: 'user', content: message },
-    ], {
+      ...truncatedHistory,
+    ];
+
+    const response = await createChatCompletion(openAIMessages, {
       maxTokens: 1000,
       temperature: 0.3, // Lower temperature for more factual responses
     });
@@ -60,6 +120,7 @@ ${articleContext}`;
       response,
       hasContext: true,
       articleCount: articles.length,
+      conversationTruncated: truncated,
     });
   } catch (error) {
     console.error('Error in chat:', error);
