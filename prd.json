@@ -85,7 +85,7 @@
         "OpenAI API client is configured using user-provided API key from .env file",
         "Rate limiting is implemented to manage API costs",
         "Token budgeting/chunking utility exists for large content",
-        "Uses gpt-4o-mini or gpt-3.5-turbo for cost efficiency",
+        "Uses the default OpenAI GPT model (or gpt-5.2 if available)",
         "Typecheck passes"
       ],
       "priority": 6,
