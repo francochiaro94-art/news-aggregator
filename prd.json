@@ -16,8 +16,8 @@
         "Typecheck passes"
       ],
       "priority": 1,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Schema in web/src/lib/db/schema.ts"
     },
     {
       "id": "US-002",
@@ -31,8 +31,8 @@
         "Typecheck passes"
       ],
       "priority": 2,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Schema in web/src/lib/db/schema.ts, operations in operations.ts"
     },
     {
       "id": "US-003",
@@ -45,8 +45,8 @@
         "Typecheck passes"
       ],
       "priority": 3,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "OAuth in web/src/lib/gmail/auth.ts with AES-256 encryption"
     },
     {
       "id": "US-004",
@@ -60,8 +60,8 @@
         "Typecheck passes"
       ],
       "priority": 4,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Service in web/src/lib/gmail/service.ts"
     },
     {
       "id": "US-005",
@@ -74,8 +74,8 @@
         "Typecheck passes"
       ],
       "priority": 5,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Parser in web/src/lib/gmail/parser.ts"
     },
     {
       "id": "US-006",
@@ -89,8 +89,8 @@
         "Typecheck passes"
       ],
       "priority": 6,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Client in web/src/lib/ai/client.ts with rate limiting"
     },
     {
       "id": "US-007",
@@ -103,8 +103,8 @@
         "Typecheck passes"
       ],
       "priority": 7,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Service in web/src/lib/ai/summarize.ts"
     },
     {
       "id": "US-008",
@@ -117,8 +117,8 @@
         "Typecheck passes"
       ],
       "priority": 8,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Service in web/src/lib/ai/dedup.ts"
     },
     {
       "id": "US-009",
@@ -131,8 +131,8 @@
         "Typecheck passes"
       ],
       "priority": 9,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Service in web/src/lib/ai/themes.ts"
     },
     {
       "id": "US-010",
@@ -146,8 +146,8 @@
         "Typecheck passes"
       ],
       "priority": 10,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Pipeline in web/src/lib/aggregation/pipeline.ts, API at /api/aggregation/weekly"
     },
     {
       "id": "US-011",
@@ -160,8 +160,8 @@
         "Typecheck passes"
       ],
       "priority": 11,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "API at /api/aggregation/custom"
     },
     {
       "id": "US-012",
@@ -176,8 +176,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 12,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Layout in web/src/app/layout.tsx, Navigation in web/src/components/Navigation.tsx"
     },
     {
       "id": "US-013",
@@ -192,8 +192,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 13,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Page in web/src/app/page.tsx"
     },
     {
       "id": "US-014",
@@ -207,8 +207,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 14,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Page in web/src/app/articles/page.tsx"
     },
     {
       "id": "US-015",
@@ -223,8 +223,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 15,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Component in web/src/components/DateRangePicker.tsx"
     },
     {
       "id": "US-016",
@@ -238,8 +238,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 16,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Component in web/src/components/ArticleCard.tsx, API at /api/feedback"
     },
     {
       "id": "US-017",
@@ -252,8 +252,8 @@
         "Typecheck passes"
       ],
       "priority": 17,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Database operations support topic preferences, foundation ready for learning"
     },
     {
       "id": "US-018",
@@ -267,8 +267,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 18,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "Page in web/src/app/chat/page.tsx"
     },
     {
       "id": "US-019",
@@ -283,8 +283,8 @@
         "Verify in browser using dev-browser skill"
       ],
       "priority": 19,
-      "passes": false,
-      "notes": ""
+      "passes": true,
+      "notes": "API at /api/chat with strict prompt instructions"
     }
   ]
 }
